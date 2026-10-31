@@ -93,9 +93,24 @@ validation set, which is used only for early stopping and for choosing
 The split is deterministic and prints a SHA-256 fingerprint; passing it as
 `--expected` in later sessions stops the script if the dataset differs. The
 split used in the study, built from version 14 of the dataset, has the
-fingerprint `c6165896dbcf`. When a
-fold finishes through `--resume`, run `cross_validation.py evaluate` to obtain
-its test metrics.
+fingerprint `c6165896dbcf`.
+
+An interrupted seed or fold is resumed with the same command plus `--resume`;
+the record of the run, including the test evaluation of a fold, is written when
+the training ends.
+
+## Google Colab
+
+The `notebooks` folder has one notebook per stage. Each notebook clones this
+repository, prepares the dataset and calls the scripts above, so the runs are
+the same as from the command line. Outputs are written to Google Drive, and the
+Roboflow API key is read from the Colab secret `ROBOFLOW_API_KEY`.
+
+| Stage | Notebook |
+|---|---|
+| Model comparison | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hugocesarleal/grape-segmentation-training/blob/main/notebooks/model_comparison.ipynb) |
+| Seed variability | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hugocesarleal/grape-segmentation-training/blob/main/notebooks/seed_variability.ipynb) |
+| Cross-validation | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hugocesarleal/grape-segmentation-training/blob/main/notebooks/cross_validation.ipynb) |
 
 ## Reproducing the runs of the study
 

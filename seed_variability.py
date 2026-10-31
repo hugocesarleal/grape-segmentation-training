@@ -6,6 +6,7 @@ data partition fixed. Deterministic mode is disabled on purpose, so that the
 non-deterministic GPU operations also contribute to the measured variation.
 
     python seed_variability.py train --data dataset/data.yaml --seed 3
+    python seed_variability.py train --seed 3 --resume
     python seed_variability.py summary --results runs/seeds
 
 Each run writes seed<k>.json; the summary step reports the mean and the
@@ -41,8 +42,14 @@ def training_arguments(args):
 def train(args):
     from ultralytics import YOLO
 
-    model = YOLO(args.model)
-    results = model.train(**training_arguments(args))
+    if args.resume:
+        model = YOLO(str(Path(args.project) / f"seed{args.seed}" / "weights" / "last.pt"))
+        results = model.train(resume=True)
+    else:
+        if not args.data:
+            raise SystemExit("--data is required for a new run")
+        model = YOLO(args.model)
+        results = model.train(**training_arguments(args))
     run_dir = Path(model.trainer.save_dir)
     metrics = metrics_dict(results, model.names)
     epoch, epochs_run = best_epoch(run_dir)
@@ -70,8 +77,9 @@ def main():
     sub = parser.add_subparsers(dest="command", required=True)
 
     p = sub.add_parser("train", help="train the selected configuration with one seed")
-    p.add_argument("--data", required=True, help="data.yaml of the dataset without offline augmentation")
+    p.add_argument("--data", help="data.yaml of the dataset without offline augmentation")
     p.add_argument("--seed", type=int, required=True)
+    p.add_argument("--resume", action="store_true", help="resume the interrupted run of this seed from its last.pt")
     p.add_argument("--model", default="yolo26l-seg.pt")
     p.add_argument("--batch", type=int, default=8, help="reduced by Ultralytics if the GPU memory is insufficient")
     p.add_argument("--device", default="0")

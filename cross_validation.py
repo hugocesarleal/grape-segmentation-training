@@ -14,7 +14,7 @@ made in different sessions can be checked against each other.
 
     python cross_validation.py split --dataset dataset --fold 3
     python cross_validation.py train --fold 3
-    python cross_validation.py evaluate --fold 3 --run runs/cv/fold3
+    python cross_validation.py train --fold 3 --resume
     python cross_validation.py summary --results runs/cv
 """
 
@@ -181,8 +181,12 @@ def train(args):
     data = fold_dir / "data.yaml"
     if not data.exists():
         raise SystemExit(f"{data} not found; run the split step first")
-    model = YOLO(args.model)
-    results = model.train(**training_arguments(args, data))
+    if args.resume:
+        model = YOLO(str(Path(args.project) / f"fold{args.fold}" / "weights" / "last.pt"))
+        results = model.train(resume=True)
+    else:
+        model = YOLO(args.model)
+        results = model.train(**training_arguments(args, data))
     run_dir = Path(model.trainer.save_dir)
     write_record(args.fold, run_dir, fold_dir, args.project, args.batch, validation=metrics_dict(results, model.names))
 
@@ -200,13 +204,15 @@ def write_record(fold, run_dir, fold_dir, project, batch, validation=None):
 
 
 def evaluate_command(args):
-    # For runs that finished through --resume, where the test step was not executed.
+    # For a fold whose training finished but whose test evaluation was not run.
     write_record(args.fold, Path(args.run), Path(args.folds) / f"fold{args.fold}", args.project, args.batch)
 
 
 def summary(args):
     records = {r["fold"]: r for r in (json.loads(p.read_text(encoding="utf-8"))
                                       for p in sorted(Path(args.results).glob("fold*.json")))}
+    if not records:
+        raise SystemExit(f"no fold<k>.json files in {args.results}")
     missing = sorted(set(range(K)) - set(records))
     if missing:
         print(f"missing folds: {missing}")
@@ -246,6 +252,7 @@ def main():
             p.add_argument("--model", default="yolo26l-seg.pt")
             p.add_argument("--device", default="0")
             p.add_argument("--workers", type=int, default=11)
+            p.add_argument("--resume", action="store_true", help="resume the interrupted run of this fold from its last.pt")
         else:
             p.add_argument("--run", required=True, help="run directory with weights/best.pt")
         p.set_defaults(func=func)

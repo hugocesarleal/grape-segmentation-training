@@ -36,7 +36,7 @@ def training_arguments(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--data", required=True, help="data.yaml of the prepared dataset")
+    parser.add_argument("--data", help="data.yaml of the prepared dataset, required unless --resume is given")
     parser.add_argument("--model", default="yolo26l-seg.pt", help="pretrained weights, e.g. yolo11s-seg.pt or yolo26x-seg.pt")
     parser.add_argument("--offline", action="store_true", help="the dataset contains offline augmentation (150 epochs, patience 40)")
     parser.add_argument("--no-online", action="store_true", help="disable online augmentation")
@@ -52,8 +52,8 @@ def main():
     parser.add_argument("--save-period", type=int, default=10, help="checkpoint interval in epochs")
     parser.add_argument("--resume", metavar="LAST_PT", help="resume an interrupted run from its last.pt")
     args = parser.parse_args()
-    if not args.resume and not args.name:
-        parser.error("--name is required for a new run")
+    if not args.resume and not (args.data and args.name):
+        parser.error("--data and --name are required for a new run")
 
     from ultralytics import YOLO
 
