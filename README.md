@@ -101,10 +101,10 @@ the training ends.
 
 ## Google Colab
 
-The `notebooks` folder has one notebook per stage. Each notebook clones this
-repository, prepares the dataset and calls the scripts above, so the runs are
-the same as from the command line. Outputs are written to Google Drive, and the
-Roboflow API key is read from the Colab secret `ROBOFLOW_API_KEY`.
+The `notebooks` folder has one self-contained notebook per stage. Each one
+contains the full code of its stage, taken from the scripts above, and installs
+only Ultralytics and the Roboflow client. Outputs are written to Google Drive,
+and the Roboflow API key is read from the Colab secret `ROBOFLOW_API_KEY`.
 
 | Stage | Notebook |
 |---|---|

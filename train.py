@@ -34,6 +34,27 @@ def training_arguments(args):
     }
 
 
+def train(args):
+    from ultralytics import YOLO
+
+    if args.resume:
+        model = YOLO(args.resume)
+        results = model.train(resume=True)
+    else:
+        model = YOLO(args.model)
+        results = model.train(**training_arguments(args))
+
+    run_dir = Path(model.trainer.save_dir)
+    metrics = metrics_dict(results, model.names)
+    epoch, epochs_run = best_epoch(run_dir)
+    save_json(
+        dict(model=args.model, offline=args.offline, online=not args.no_online,
+             best_epoch=epoch, epochs_run=epochs_run, validation=metrics),
+        run_dir / "metrics.json",
+    )
+    print(table(metrics))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--data", help="data.yaml of the prepared dataset, required unless --resume is given")
@@ -54,25 +75,7 @@ def main():
     args = parser.parse_args()
     if not args.resume and not (args.data and args.name):
         parser.error("--data and --name are required for a new run")
-
-    from ultralytics import YOLO
-
-    if args.resume:
-        model = YOLO(args.resume)
-        results = model.train(resume=True)
-    else:
-        model = YOLO(args.model)
-        results = model.train(**training_arguments(args))
-
-    run_dir = Path(model.trainer.save_dir)
-    metrics = metrics_dict(results, model.names)
-    epoch, epochs_run = best_epoch(run_dir)
-    save_json(
-        dict(model=args.model, offline=args.offline, online=not args.no_online,
-             best_epoch=epoch, epochs_run=epochs_run, validation=metrics),
-        run_dir / "metrics.json",
-    )
-    print(table(metrics))
+    train(args)
 
 
 if __name__ == "__main__":
