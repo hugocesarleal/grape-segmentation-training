@@ -1,5 +1,7 @@
 # Grape Segmentation Training
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23842354.svg)](https://doi.org/10.5281/zenodo.23842354)
+
 Training and evaluation protocol for YOLO instance segmentation models that
 detect grape bunches and individual berries in field images. The code
 reproduces the three experimental stages of the study:
@@ -155,7 +157,20 @@ the mask of a bunch intact where berries overlap it.
 The code is released under the MIT License. Ultralytics, used for training and
 evaluation, is distributed under its own license (AGPL-3.0).
 
+## Citation
+
+```bibtex
+@software{leal_2026_23842354,
+  author    = {Leal, Hugo},
+  title     = {Grape Segmentation Training: YOLO Instance Segmentation Protocol for Grape Bunches and Berries},
+  year      = 2026,
+  publisher = {Zenodo},
+  version   = {1.0.0},
+  doi       = {10.5281/zenodo.23842354}
+}
+```
+
 ## Related repositories
 
-- Grape Frame Extractor: extraction of frames from the vineyard videos.
-- Grape Dataset Deduplication: removal of redundant images by perceptual hashing.
+- [Grape Frame Extractor](https://doi.org/10.5281/zenodo.20874000): extraction of frames from the vineyard videos.
+- [Grape Dataset Deduplication](https://doi.org/10.5281/zenodo.20874787): removal of redundant images by perceptual hashing.
