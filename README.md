@@ -31,7 +31,7 @@ values or the way precision, recall and F1 are reported.
 ## Dataset
 
 The dataset contains 530 field images of green and purple grapes from the
-experimental vineyard of the Polytechnic Institute of Bragança, annotated with
+experimental vineyard of the Polytechnic University of Bragança, annotated with
 two classes, `bunch of grapes` and `grape`. It is private and hosted on
 Roboflow. Version 14 of the Roboflow project is the export without offline
 augmentation, split into 371 training, 106 validation and 53 test images.
