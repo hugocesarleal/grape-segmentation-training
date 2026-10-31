@@ -150,6 +150,11 @@ and masks. F1 is computed from precision and recall, per class, and averaged
 over the two classes. Validation and test use `overlap_mask=False`, which keeps
 the mask of a bunch intact where berries overlap it.
 
+## License
+
+The code is released under the MIT License. Ultralytics, used for training and
+evaluation, is distributed under its own license (AGPL-3.0).
+
 ## Related repositories
 
 - Grape Frame Extractor: extraction of frames from the vineyard videos.
